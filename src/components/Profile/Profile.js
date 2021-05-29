@@ -3,7 +3,7 @@ import { Row, Card } from 'react-materialize';
 import * as services from '../../services/deliveryServices';
 
 export default function Profile() {
-  const [state, setState] = useState('');
+  const [state, setState] = useState({});
 
   useEffect(() => {
     services
