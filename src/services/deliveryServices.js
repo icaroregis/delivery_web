@@ -24,3 +24,9 @@ export const getCardapio = () => {
     },
   );
 };
+
+export const postClient = (cliente) => {
+  return axios.post(getApiUrl() + '/api/cliente', cliente).then((response) => {
+    return response.data;
+  });
+};
