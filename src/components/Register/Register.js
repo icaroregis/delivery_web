@@ -7,26 +7,69 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
   const [senha, setSenha] = useState('');
-  const [senhaConfirm, setSenhaConfirm] = useState('');
+  const [senhaConfirmacao, setSenhaConfirmacao] = useState('');
+  const [success, setSuccess] = useState('');
+  const [fail, setFail] = useState('');
+  const [errors, setErrors] = useState({});
 
-  function handleSubmit() {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setSuccess('');
+    setFail('');
+    setErrors({});
+
     services
-      .postClient({
+      .postCliente({
         nome,
         email,
         telefone,
         senha,
-        senhaConfirm,
+        senhaConfirmacao,
       })
-      .then((e) => console.log(e))
-      .catch((e) => console.log(e));
-  }
+      .then((data) => {
+        setSuccess(data.message);
+        setNome('');
+        setEmail('');
+        setTelefone('');
+        setSenha('');
+        setSenhaConfirmacao('');
+      })
+      .catch((e) => {
+        var result = e.response;
+        switch (result.status) {
+          case 400:
+            setErrors(result.data.errors);
+            break;
+
+          case 500:
+            setFail(result.data.message);
+            break;
+        }
+      });
+  };
 
   return (
     <Card>
       <h5>Crie sua conta de cliente</h5>
       <br />
-      <form method="post" onSubmit={(e) => e.preventDefault}>
+
+      {success ? (
+        <div className="card-panel green lighten-2 white-text">
+          <strong>{success}</strong>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      {fail ? (
+        <div className="card-panel red lighten-2 white-text">
+          <strong>{fail}</strong>
+        </div>
+      ) : (
+        <div></div>
+      )}
+
+      <form method="post" onSubmit={handleSubmit}>
         <Row>
           <Col s={6}>
             <Input
@@ -35,8 +78,21 @@ export default function Register() {
               type="text"
               s={12}
               value={nome}
-              onChange={({ target }) => setNome(target.value)}
+              onChange={(e) => setNome(e.target.value)}
             />
+            {errors.Nome ? (
+              errors.Nome.map((item, i) => (
+                <div
+                  key={i}
+                  className="red-text text-darken-4"
+                  style={{ marginLeft: '20px' }}
+                >
+                  {item}
+                </div>
+              ))
+            ) : (
+              <span></span>
+            )}
           </Col>
           <Col s={3}>
             <Input
@@ -45,8 +101,21 @@ export default function Register() {
               type="text"
               s={12}
               value={email}
-              onChange={({ target }) => setEmail(target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
+            {errors.Email ? (
+              errors.Email.map((item, i) => (
+                <div
+                  key={i}
+                  className="red-text text-darken-4"
+                  style={{ marginLeft: '20px' }}
+                >
+                  {item}
+                </div>
+              ))
+            ) : (
+              <span></span>
+            )}
           </Col>
           <Col s={3}>
             <Input
@@ -55,8 +124,21 @@ export default function Register() {
               type="text"
               s={12}
               value={telefone}
-              onChange={({ target }) => setTelefone(target.value)}
+              onChange={(e) => setTelefone(e.target.value)}
             />
+            {errors.Telefone ? (
+              errors.Telefone.map((item, i) => (
+                <div
+                  key={i}
+                  className="red-text text-darken-4"
+                  style={{ marginLeft: '20px' }}
+                >
+                  {item}
+                </div>
+              ))
+            ) : (
+              <span></span>
+            )}
           </Col>
         </Row>
         <Row>
@@ -67,8 +149,21 @@ export default function Register() {
               type="password"
               s={12}
               value={senha}
-              onChange={({ target }) => setSenha(target.value)}
+              onChange={(e) => setSenha(e.target.value)}
             />
+            {errors.Senha ? (
+              errors.Senha.map((item, i) => (
+                <div
+                  key={i}
+                  className="red-text text-darken-4"
+                  style={{ marginLeft: '20px' }}
+                >
+                  {item}
+                </div>
+              ))
+            ) : (
+              <span></span>
+            )}
           </Col>
         </Row>
         <Row>
@@ -78,18 +173,27 @@ export default function Register() {
               placeholder="Digite aqui"
               type="password"
               s={12}
-              value={senhaConfirm}
-              onChange={({ target }) => setSenhaConfirm(target.value)}
+              value={senhaConfirmacao}
+              onChange={(e) => setSenhaConfirmacao(e.target.value)}
             />
+            {errors.SenhaConfirmacao ? (
+              errors.SenhaConfirmacao.map((item, i) => (
+                <div
+                  key={i}
+                  className="red-text text-darken-4"
+                  style={{ marginLeft: '20px' }}
+                >
+                  {item}
+                </div>
+              ))
+            ) : (
+              <span></span>
+            )}
           </Col>
         </Row>
         <Row>
           <Col s={12}>
-            <Button
-              type="submit"
-              className="deep-orange"
-              onClick={handleSubmit}
-            >
+            <Button type="submit" className="deep-orange">
               Realizar Cadastro
             </Button>
           </Col>
