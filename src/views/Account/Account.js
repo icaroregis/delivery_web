@@ -1,5 +1,6 @@
 import React from 'react';
+import Register from '../../components/Register/Register';
 
 export default function Account() {
-  return <h1>ola Account</h1>;
+  return <Register />;
 }
